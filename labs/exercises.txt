@@ -1,0 +1,186 @@
+C++
+1. Implement in C language stack of integers. Provide the following functionality:
+
+void init(Stack* s)
+void destroy(Stack* s)
+void push(Stack* s, int element)
+int pop(Stack* s)
+bool isEmpty(const Stack* s)
+Allocate the memory dynamically. When stack capacity is not sufficient any more due to the push function calls increment the stack size. Propose reasonable strategy for how the stack size grows. Growing by one cell is not allowed (it causes memory reallocation with every push operation). Use valgrind to verify there are no memory leaks.
+
+Handle all possible errors (e.g. failure in memory allocation or calling the pop function when the stack is empty).
+
+Carefully test the implemented functionality. Think about possible use cases and propose a few test cases.
+
+Split the program into Stack.h, Stack.c and TestStack.c files.
+
+Tip 1
+In C language, depending on the compiler version, it may be necessary to include the stdbool.h header file to use a bool type.
+
+Tip 2
+In C language it is more convenient to define structures using the typedef keyword:
+
+typedef struct {
+    // Put member variables here.
+} Stack;
+Then you do not need to specify the struct keyword later in the program. Structure types defined without the typedef keyword must be later used in the program with the struct keyword. For example the declaration of the init function becomes longer as follows:
+
+void init(struct Stack* s)
+Tip 3
+In C and C++ language, to prevent the content of a header file from being included more than once in the same compilation unit, you can use the #pragma once preprocessor directive (it is not standard, but it is recognized by many compilers, including gcc and Microsoft Visual C++):
+
+// MyFile.h
+#pragma once
+// Put code here.
+It is a convenient replacement for the traditional and standard solution, which is to insert the include guards:
+
+// MyFile.h
+#ifndef MYFILE_H
+#define MYFILE_H
+// Put code here.
+#endif 
+To check if it works, you can experiment and include Stack.h twice in one of your .c files:
+
+#include "Stack.h"
+#include "Stack.h"
+
+
+
+
+------------------------------------------------------------------------------------------------------------
+  2. Implement functionality from the previous exercise in C++ language writing the Stack class. Replace init and destroy functions by constructor and destructor, respectively.
+
+In C++ language you can use malloc and free functions for memory allocation as you do it in C language (new and delete operators will be explained later during the semester). Use valgrind to verify there are no memory leaks.
+
+Carefully test the implemented functionality.
+
+Split the program into Stack.h, Stack.cpp and TestStack.cpp files.
+
+Tip 1
+In C++ language bool is a built in type (like int or double). There is no need to include the stdbool.h header file.
+
+Tip 2
+Consider using the #pragma once preprocessor directive (as in the previous task).
+------------------------------------------------------------------------------------------------------------
+3. Extend the previous task by implementing the following functionality:
+
+copy constructor,
+assignment operator.
+Optimize the copy constructor, so that it allocates as little memory as possible.
+
+Optimize the assignment operator, so that it does not unnecessarily free nor allocate memory.
+
+Carefully test the implemented functionality. Consider different test cases. For example, when testing the assignment operator consider assigning larger stack to smaller stack, assigning smaller stack to larger one, calling the assignment operator when both stacks have equal size, calling the assignment operator when one of the stacks is empty, assigning the stack to itself etc.
+
+Use valgrind to verify there are no memory leaks.
+
+Perform all the steps of the GDB tutorial (login oopc, password oopc22) to learn how to use the debugger.
+
+Using the debugger check when the copy constructor and the assignment operator are called in your program. Consider the following cases:
+
+Stack s1;
+s1.push(1);
+s1.push(2);
+s1.push(3);
+
+Stack s2(s1);
+
+Stack s3 = s1;
+
+Stack s4;
+s4.push(10);
+s4 = s1;
+
+runSomeFunction(s1);       // Stack object is passed by value.
+runAnotherFunction(s1);    // Stack object is passed by reference.
+------------------------------------------------------------------------------------------------------------
+4. Write the class representing a complex number. Implement the following functionality:
+
+read-write access to real and imaginary part (you can make the real and imaginary fields public),
+stream insertion operator <<,
+arithmetic operators: + - * / += -= *= /=,
+comparison operators: == !=,
+functions returning amplitude and phase (you can use in your implementation functions from the C++ standard library).
+Carefully test the implemented functionality. Perform tests for inconstant and constant objects. Test special cases like e.g.:
+
+a += b += c
+(a += b) += c
+a *= b *= c
+(a *= b) *= c
+a + 7
+7 + a
+b * 5
+5 * b
+c == 3.5
+3.5 == c
+where a, b and c are complex numbers.
+
+Split the program into Complex.h, Complex.cpp and TestComplex.cpp files.
+
+Advice
+Do not change the lecture example. Read it carefully and understand, but write the class by yourself from scratch.
+------------------------------------------------------------------------------------------------------------
+5. Write the class representing a polynomial, appropriate for the usage presented in this example.
+
+Store in memory only coefficients which are not zeros (for example, in case of p = x^1000 + 6x^350 + 15 store only 3 coefficients, not 1001).
+
+You are allowed to use containers from the C++ standard library.
+
+Check what happens if the polynomial is passed by value rather than by reference. Make sure that your implementation allows for that.
+
+Split the program into Poly.h, Poly.cpp and TestPoly.cpp files.
+
+For ambitious students
+If you want to get familiar with function templates, use this example instead of the previous one. Analyze the difference between them.
+￼
+￼
+
+6. Write the class representing a matrix. Use reference counting in the implementation. Implement the following functionality:
+
+copy constructor,
+assignment operator,
+stream insertion operator <<,
+arithmetic operators: + - * += -= *=,
+comparison operators: == !=,
+ability to read matrix from input file stream,
+single element access - you can overload the () operator, so that m(2, 3) means element placed in row 2, column 3 of the matrix object m. You are required to distinguish between the reading and writing operations. If you present a program which treats every single element access as a write operation then the grade is decreased by 20%.
+You are not allowed to use containers from the C++ standard library except the std::string class. To store matrix elements in the memory use the memory allocation technique which you know from this PDSC lecture (check slides entitled Two-Dimensional Arrays). Use new and delete operators instead of malloc and free functions.
+
+Error handling:
+
+in case of an error throw an exception,
+distinguish different types of errors by throwing exceptions of different types,
+provide your own classes to represent errors (one class per one type of errors).
+Carefully test the implemented functionality. Test whether reference counting works properly. Test throwing the exceptions.
+
+Split the program into Matrix.h, Matrix.cpp and TestMatrix.cpp files (you can extract more files if you wish).
+
+It is possible to present a simplified program where reference counting is not implemented. In this case the maximal grade is 60%.
+------------------------------------------------------------------------------------------------------------
+7. Write the Map template of an associative container class and the Employee class representing employee personal data, appropriate for the usage presented in this example.
+
+Consider in your implementation that the user may try to add data with the same key multiple times. Also, consider searching the database by the key which does not exist in the database. Add tests for these special cases.
+
+Demonstrate the possible usage of such container also for database storing books in the library, where the key is the title of the book and the value objects store the information about the author, category, number of pages and status (on the bookshelf / borrowed).
+
+You are not allowed to use containers from the C++ standard library except the std::string class.
+
+Tip
+The entire template implementation must be specified in a header file (Map.h). Template definitions are not split into .h and .cpp files.
+￼
+
+8. Write your own version of the popular computer game Pac-Man. Use the Qt library.
+
+Implement the following functionality:
+
+one graphic object - representing the player - is controlled by the keyboard,
+four graphic objects - representing the enemies - are controlled automatically by the computer and each enemy has different behaviour,
+there are two kinds of objects to be collected by the player:
+simple objects increasing the score of the player,
+special objects increasing the score of the player (by the value greater than in case of simple objects) and modifying the status of the player in the following way: when the special object has been collected, the player can catch the enemies for a certain period of time. Otherwise the enemies can catch the player.
+Propose appropriate class hierarchy. For example it is recommended that the enemies are stored in one container (consider using virtual functions).
+
+Tip
+Install Qt with the following (or similar) command:
+
+sudo apt install qt5-default
