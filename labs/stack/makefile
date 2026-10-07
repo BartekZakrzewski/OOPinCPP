@@ -3,7 +3,7 @@ CFLAGS = -Wall -Wextra -g
 
 TARGET = stack
 
-SRCS = stack.c
+SRCS = Stack.c TestStack.c
 OBJS = $(SRCS:.c=.o)
 
 run: clean $(TARGET)

@@ -65,8 +65,6 @@ static void test_growth_beyond_initial_capacity(void) {
 }
 
 static void test_growth_is_geometric(void) {
-  /* Count reallocations: with doubling, 100000 pushes need ~15 growths,
-     with +1 growth they would need ~100000. */
   Stack s;
   init(&s);
   int growths = 0;
@@ -89,13 +87,11 @@ static void test_pop_on_empty_reports_error(void) {
   assert(s.status == STACK_ERR_EMPTY);
   assert(isEmpty(&s));
 
-  /* The stack must remain usable after the error. */
   push(&s, 7);
   assert(s.status == STACK_OK);
   assert(pop(&s) == 7);
   assert(s.status == STACK_OK);
 
-  /* Pop until empty, then once more. */
   push(&s, 1);
   pop(&s);
   (void)pop(&s);
@@ -151,14 +147,12 @@ static void test_double_destroy_and_null_safety(void) {
   init(&s);
   push(&s, 1);
   destroy(&s);
-  destroy(&s);   /* must not crash or double free */
-  destroy(NULL); /* must not crash */
+  destroy(&s);
+  destroy(NULL);
   assert(isEmpty(NULL));
 }
 
 static void test_push_on_stack_without_buffer(void) {
-  /* Simulates a stack whose init allocation failed: data == NULL,
-     capacity == 0. push must recover by allocating. */
   Stack s = {NULL, 0, 0, STACK_ERR_ALLOC};
   push(&s, 5);
   assert(s.status == STACK_OK);
@@ -167,8 +161,6 @@ static void test_push_on_stack_without_buffer(void) {
 }
 
 static void test_allocation_failure_is_reported(void) {
-  /* Pretend the stack is full with a huge capacity so that growing it
-     overflows size_t. push must fail cleanly, without touching memory. */
   Stack s;
   init(&s);
   push(&s, 1);
@@ -181,10 +173,9 @@ static void test_allocation_failure_is_reported(void) {
   s.size = s.capacity;
   push(&s, 2);
   assert(s.status == STACK_ERR_ALLOC);
-  assert(s.size == SIZE_MAX / sizeof(int)); /* unchanged */
-  assert(s.data == real_data);              /* buffer untouched */
+  assert(s.size == SIZE_MAX / sizeof(int));
+  assert(s.data == real_data);
 
-  /* Restore the real state so destroy/valgrind see consistent data. */
   s.capacity = real_cap;
   s.size = real_size;
   assert(pop(&s) == 1);
