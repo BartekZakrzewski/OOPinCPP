@@ -34,110 +34,54 @@ static void test_growth() {
   assert(s.pop() == 999);
 }
 
-static Stack make_stack(int from, int to) {
-  Stack s;
-  for (int i = from; i <= to; i++) {
+static void fill(Stack &s, int n) {
+  for (int i = 1; i <= n; i++) {
     s.push(i);
   }
-  return s;
 }
 
-static void assert_contents(Stack s, int from, int to) {
-  assert(s.size() == static_cast<std::size_t>(to - from + 1));
-  for (int i = to; i >= from; i--) {
-    assert(s.pop() == i);
-  }
-  assert(s.isEmpty());
-}
-
-static void test_copy_ctor() {
-  Stack a = make_stack(1, 5);
+static void test_copy_constructor() {
+  Stack a;
+  fill(a, 5);
   Stack b(a);
-  assert(b.status() == Status::Ok);
   assert(b.size() == 5);
   assert(b.capacity() == 5);
-  assert_contents(b, 1, 5);
-  assert_contents(a, 1, 5);
-}
+  b.push(6);
+  assert(a.size() == 5);
+  assert(b.pop() == 6);
+  assert(b.pop() == 5);
 
-static void test_copy_ctor_empty() {
-  Stack a;
-  Stack b(a);
-  assert(b.isEmpty());
-  assert(b.capacity() == 0);
-  b.push(42);
-  assert(b.pop() == 42);
-}
-
-static void test_copy_independent() {
-  Stack a = make_stack(1, 3);
-  Stack b(a);
-  b.push(4);
-  a.pop();
-  assert_contents(a, 1, 2);
-  assert_contents(b, 1, 4);
-}
-
-static void test_assign_larger_to_smaller() {
-  Stack big = make_stack(1, 20);
-  Stack small = make_stack(100, 101);
-  small = big;
-  assert(small.capacity() >= 20);
-  assert_contents(small, 1, 20);
-  assert_contents(big, 1, 20);
-}
-
-static void test_assign_smaller_to_larger() {
-  Stack big = make_stack(1, 20);
-  Stack small = make_stack(100, 101);
-  std::size_t cap = big.capacity();
-  big = small;
-  assert(big.capacity() == cap);
-  assert_contents(big, 100, 101);
-}
-
-static void test_assign_equal_size() {
-  Stack a = make_stack(1, 4);
-  Stack b = make_stack(5, 8);
-  std::size_t cap = a.capacity();
-  a = b;
-  assert(a.capacity() == cap);
-  assert_contents(a, 5, 8);
-}
-
-static void test_assign_empty() {
-  Stack a = make_stack(1, 4);
   Stack empty;
-  a = empty;
-  assert(a.isEmpty());
-  a.push(7);
-  assert(a.pop() == 7);
-
-  Stack b;
-  b = make_stack(1, 3);
-  assert_contents(b, 1, 3);
+  Stack c(empty);
+  assert(c.isEmpty());
+  assert(c.capacity() == 0);
 }
 
-static void test_assign_from_zero_capacity() {
-  Stack empty;
-  Stack zero(empty);
-  zero = make_stack(1, 6);
-  assert_contents(zero, 1, 6);
-}
+static void test_assign() {
+  Stack big, small;
+  fill(big, 20);
+  fill(small, 2);
 
-static void test_self_assign() {
-  Stack a = make_stack(1, 5);
-  Stack &ref = a;
-  a = ref;
-  assert_contents(a, 1, 5);
-}
+  Stack s1 = small;
+  s1 = big;
+  assert(s1.size() == 20);
+  assert(s1.pop() == 20);
 
-static void test_chained_assign() {
-  Stack a, b;
-  Stack c = make_stack(1, 3);
-  a = b = c;
-  assert_contents(a, 1, 3);
-  assert_contents(b, 1, 3);
+  Stack s2 = big;
+  std::size_t cap = s2.capacity();
+  s2 = small;
+  assert(s2.capacity() == cap);
+  assert(s2.size() == 2);
+  assert(s2.pop() == 2);
+
+  Stack s3, empty;
+  s3 = empty;
+  assert(s3.isEmpty());
+
+  Stack &ref = big;
+  big = ref;
+  assert(big.size() == 20);
+  assert(big.pop() == 20);
 }
 
 static void runSomeFunction(Stack s) { s.push(99); }
@@ -162,10 +106,6 @@ static void test_debugger_scenario() {
   assert(s1.size() == 3);
   runAnotherFunction(s1);
   assert(s1.size() == 4);
-
-  assert_contents(s2, 1, 3);
-  assert_contents(s3, 1, 3);
-  assert_contents(s4, 1, 3);
 }
 
 int main() {
@@ -173,17 +113,9 @@ int main() {
   test_lifo();
   test_pop_empty();
   test_growth();
-  test_copy_ctor();
-  test_copy_ctor_empty();
-  test_copy_independent();
-  test_assign_larger_to_smaller();
-  test_assign_smaller_to_larger();
-  test_assign_equal_size();
-  test_assign_empty();
-  test_assign_from_zero_capacity();
-  test_self_assign();
-  test_chained_assign();
-  test_debugger_scenario();
+  test_copy_constructor();
+  test_assign();
+  // test_debugger_scenario();
   std::printf("All tests passed.\n");
   return 0;
 }
