@@ -8,8 +8,9 @@
 #define CAP_FACTOR 2
 
 void init(Stack *s) {
-  if (s == NULL)
+  if (s == NULL) {
     return;
+  }
   s->size = 0;
   s->capacity = 0;
   s->status = STACK_OK;
@@ -22,8 +23,9 @@ void init(Stack *s) {
 }
 
 void destroy(Stack *s) {
-  if (s == NULL)
+  if (s == NULL) {
     return;
+  }
   free(s->data);
   s->data = NULL;
   s->size = 0;
@@ -32,8 +34,9 @@ void destroy(Stack *s) {
 
 static bool expand(Stack *s) {
   size_t new_cap;
-  if (s->capacity == 0)
+  if (s->capacity == 0) {
     new_cap = INIT_CAP;
+  }
   else {
     if (s->capacity > SIZE_MAX / CAP_FACTOR) {
       s->status = STACK_ERR_ALLOC;
@@ -58,17 +61,20 @@ static bool expand(Stack *s) {
 }
 
 void push(Stack *s, int element) {
-  if (s == NULL)
+  if (s == NULL) {
     return;
-  if (s->size == s->capacity && !expand(s))
+  }
+  if (s->size == s->capacity && !expand(s)) {
     return;
+  }
   s->data[s->size++] = element;
   s->status = STACK_OK;
 }
 
 int pop(Stack *s) {
-  if (s == NULL)
+  if (s == NULL) {
     return 0;
+  }
   if (s->size == 0) {
     s->status = STACK_ERR_EMPTY;
     return 0;
