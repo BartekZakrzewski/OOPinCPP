@@ -23,13 +23,7 @@ void init(Stack *s) {
 }
 
 void destroy(Stack *s) {
-  if (s == NULL) {
-    return;
-  }
   free(s->data);
-  s->data = NULL;
-  s->size = 0;
-  s->capacity = 0;
 }
 
 static bool expand(Stack *s) {

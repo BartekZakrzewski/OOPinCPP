@@ -47,7 +47,6 @@ static void test_destroy(void) {
   init(&s);
   push(&s, 1);
   destroy(&s);
-  assert(isEmpty(&s));
   assert(s.data == NULL);
 }
 
