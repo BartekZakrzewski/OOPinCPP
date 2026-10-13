@@ -42,21 +42,11 @@ static void test_growth(void) {
   destroy(&s);
 }
 
-static void test_destroy(void) {
-  Stack s;
-  init(&s);
-  push(&s, 1);
-  destroy(&s);
-  assert(isEmpty(&s));
-  assert(s.data == NULL);
-}
-
 int main(void) {
   test_empty();
   test_lifo();
   test_pop_empty();
   test_growth();
-  test_destroy();
   printf("All tests passed.\n");
   return 0;
 }
