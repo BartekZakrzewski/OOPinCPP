@@ -14,11 +14,13 @@ static void test_empty(void) {
 static void test_lifo(void) {
   Stack s;
   init(&s);
-  for (int i = 1; i <= 10; i++)
+  for (int i = 1; i <= 10; i++) {
     push(&s, i);
+  }
   assert(s.size == 10);
-  for (int i = 10; i >= 1; i--)
+  for (int i = 10; i >= 1; i--) {
     assert(pop(&s) == i);
+  }
   assert(isEmpty(&s));
   destroy(&s);
 }
@@ -34,8 +36,9 @@ static void test_pop_empty(void) {
 static void test_growth(void) {
   Stack s;
   init(&s);
-  for (int i = 0; i < 1000; i++)
+  for (int i = 0; i < 1000; i++) {
     push(&s, i);
+  }
   assert(s.size == 1000);
   assert(s.capacity >= 1000);
   assert(pop(&s) == 999);
