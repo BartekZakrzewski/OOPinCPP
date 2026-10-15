@@ -3,7 +3,7 @@
 
 #include "Stack.h"
 
-static void test_empty(void) {
+void test_empty() {
   Stack s;
   init(&s);
   assert(isEmpty(&s));
@@ -11,7 +11,7 @@ static void test_empty(void) {
   destroy(&s);
 }
 
-static void test_lifo(void) {
+void test_lifo() {
   Stack s;
   init(&s);
   for (int i = 1; i <= 10; i++) {
@@ -25,7 +25,7 @@ static void test_lifo(void) {
   destroy(&s);
 }
 
-static void test_pop_empty(void) {
+void test_pop_empty() {
   Stack s;
   init(&s);
   pop(&s);
@@ -33,7 +33,7 @@ static void test_pop_empty(void) {
   destroy(&s);
 }
 
-static void test_growth(void) {
+void test_growth() {
   Stack s;
   init(&s);
   for (int i = 0; i < 1000; i++) {
@@ -45,7 +45,20 @@ static void test_growth(void) {
   destroy(&s);
 }
 
-int main(void) {
+void test_multiple() {
+  Stack s1, s2;
+  init(&s1);
+  init(&s2);
+  for (int i = 0; i < 1000; i++) {
+    push(&s1, i);
+  }
+  for (int i = 0; i < 1000; i++) {
+    push(&s2, i);
+  }
+  assert(s1.size == 1000);
+}
+
+int main() {
   test_empty();
   test_lifo();
   test_pop_empty();
