@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <cstdlib>
+#include <cstring>
 
 Stack::Stack() : data_(nullptr), size_(0), capacity_(0), status_(Status::Ok) {
   data_ = static_cast<int *>(std::malloc(INITIAL_CAPACITY * sizeof(int)));
@@ -10,6 +11,43 @@ Stack::Stack() : data_(nullptr), size_(0), capacity_(0), status_(Status::Ok) {
     return;
   }
   capacity_ = INITIAL_CAPACITY;
+}
+
+Stack::Stack(const Stack &other)
+    : data_(nullptr), size_(0), capacity_(0), status_(Status::Ok) {
+  if (other.size_ == 0) {
+    return;
+  }
+  data_ = static_cast<int *>(std::malloc(other.size_ * sizeof(int)));
+  if (data_ == nullptr) {
+    status_ = Status::AllocError;
+    return;
+  }
+  std::memcpy(data_, other.data_, other.size_ * sizeof(int));
+  size_ = other.size_;
+  capacity_ = other.size_;
+}
+
+Stack &Stack::operator=(const Stack &other) {
+  if (this == &other) {
+    return *this;
+  }
+  if (other.size_ > capacity_) {
+    int *tmp = static_cast<int *>(std::malloc(other.size_ * sizeof(int)));
+    if (tmp == nullptr) {
+      status_ = Status::AllocError;
+      return *this;
+    }
+    std::free(data_);
+    data_ = tmp;
+    capacity_ = other.size_;
+  }
+  if (other.size_ > 0) {
+    std::memcpy(data_, other.data_, other.size_ * sizeof(int));
+  }
+  size_ = other.size_;
+  status_ = Status::Ok;
+  return *this;
 }
 
 Stack::~Stack() { std::free(data_); }

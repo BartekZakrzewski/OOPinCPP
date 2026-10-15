@@ -9,8 +9,8 @@ public:
   Stack();
   ~Stack();
 
-  Stack(const Stack &) = delete;
-  Stack &operator=(const Stack &) = delete;
+  Stack(const Stack &other);
+  Stack &operator=(const Stack &other);
 
   void push(int element);
   int pop();
