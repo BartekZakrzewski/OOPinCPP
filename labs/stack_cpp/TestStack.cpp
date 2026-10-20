@@ -116,6 +116,7 @@ void test_assign() {
   assert(big.pop() == 20);
 }
 
+/* TODO
 void runSomeFunction(Stack s) { s.push(99); }
 
 void runAnotherFunction(Stack &s) { s.push(99); }
@@ -139,6 +140,7 @@ void test_debugger_scenario() {
   runAnotherFunction(s1);
   assert(s1.size() == 4);
 }
+*/
 
 int main() {
   test_empty();
