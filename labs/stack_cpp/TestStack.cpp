@@ -3,13 +3,13 @@
 
 #include "Stack.h"
 
-static void test_empty() {
+void test_empty() {
   Stack s;
   assert(s.isEmpty());
   assert(s.size() == 0);
 }
 
-static void test_lifo() {
+void test_lifo() {
   Stack s;
   for (int i = 1; i <= 10; i++)
     s.push(i);
@@ -19,13 +19,13 @@ static void test_lifo() {
   assert(s.isEmpty());
 }
 
-static void test_pop_empty() {
+void test_pop_empty() {
   Stack s;
   s.pop();
   assert(s.status() == Status::Empty);
 }
 
-static void test_growth() {
+void test_growth() {
   Stack s;
   for (int i = 0; i < 1000; i++)
     s.push(i);
@@ -34,13 +34,45 @@ static void test_growth() {
   assert(s.pop() == 999);
 }
 
-static void fill(Stack &s, int n) {
+void test_multiple() {
+  Stack s1, s2, s3;
+
+  for (int i = 0; i < 1000; i++) {
+    s1.push(i);
+    s2.push(-i);
+  }
+  assert(s1.size() == 1000);
+  assert(s2.size() == 1000);
+  assert(s3.isEmpty());
+
+  for (int i = 999; i >= 500; i--)
+    assert(s1.pop() == i);
+  assert(s1.size() == 500);
+  assert(s2.size() == 1000);
+  assert(s2.pop() == -999);
+
+  s3.pop();
+  assert(s3.status() == Status::Empty);
+  assert(s1.status() == Status::Ok);
+  assert(s2.status() == Status::Ok);
+
+  {
+    Stack scoped;
+    scoped.push(42);
+  }
+  for (int i = 998; i >= 0; i--)
+    assert(s2.pop() == -i);
+  assert(s2.isEmpty());
+  assert(s1.pop() == 499);
+}
+
+void fill(Stack &s, int n) {
   for (int i = 1; i <= n; i++) {
     s.push(i);
   }
 }
 
-static void test_copy_constructor() {
+void test_copy_constructor() {
   Stack a;
   fill(a, 5);
   Stack b(a);
@@ -57,7 +89,7 @@ static void test_copy_constructor() {
   assert(c.capacity() == 0);
 }
 
-static void test_assign() {
+void test_assign() {
   Stack big, small;
   fill(big, 20);
   fill(small, 2);
@@ -84,11 +116,11 @@ static void test_assign() {
   assert(big.pop() == 20);
 }
 
-static void runSomeFunction(Stack s) { s.push(99); }
+void runSomeFunction(Stack s) { s.push(99); }
 
-static void runAnotherFunction(Stack &s) { s.push(99); }
+void runAnotherFunction(Stack &s) { s.push(99); }
 
-static void test_debugger_scenario() {
+void test_debugger_scenario() {
   Stack s1;
   s1.push(1);
   s1.push(2);
@@ -113,6 +145,7 @@ int main() {
   test_lifo();
   test_pop_empty();
   test_growth();
+  test_multiple();
   test_copy_constructor();
   test_assign();
   // test_debugger_scenario();
