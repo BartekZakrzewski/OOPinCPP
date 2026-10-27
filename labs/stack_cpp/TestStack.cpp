@@ -25,6 +25,17 @@ void test_pop_empty() {
   assert(s.status() == Status::Empty);
 }
 
+void test_status_sticky() {
+  Stack s;
+  assert(s.status() == Status::Ok);
+  s.pop();
+  assert(s.status() == Status::Empty);
+  s.push(1);
+  assert(s.status() == Status::Empty);
+  assert(s.pop() == 1);
+  assert(s.status() == Status::Empty);
+}
+
 void test_growth() {
   Stack s;
   for (int i = 0; i < 1000; i++)
@@ -53,8 +64,6 @@ void test_multiple() {
 
   s3.pop();
   assert(s3.status() == Status::Empty);
-  assert(s1.status() == Status::Ok);
-  assert(s2.status() == Status::Ok);
 
   {
     Stack scoped;
@@ -110,13 +119,42 @@ void test_assign() {
   s3 = empty;
   assert(s3.isEmpty());
 
+  Stack e1, e2;
+  fill(e1, 5);
+  fill(e2, 5);
+  std::size_t e1_cap = e1.capacity();
+  e1 = e2;
+  assert(e1.size() == 5);
+  assert(e1.capacity() == e1_cap);
+  assert(e1.pop() == 5);
+
+  Stack full;
+  fill(full, 5);
+  std::size_t full_cap = full.capacity();
+  full = empty;
+  assert(full.isEmpty());
+  assert(full.capacity() == full_cap);
+  full.pop();
+  assert(full.status() == Status::Empty);
+
+  Stack fresh;
+  fresh = big;
+  assert(fresh.size() == 20);
+  assert(fresh.pop() == 20);
+
+  Stack copy;
+  copy = small;
+  copy.push(100);
+  assert(small.size() == 2);
+  assert(small.pop() == 2);
+  assert(copy.pop() == 100);
+
   Stack &ref = big;
   big = ref;
   assert(big.size() == 20);
   assert(big.pop() == 20);
 }
 
-/* TODO
 void runSomeFunction(Stack s) { s.push(99); }
 
 void runAnotherFunction(Stack &s) { s.push(99); }
@@ -140,17 +178,17 @@ void test_debugger_scenario() {
   runAnotherFunction(s1);
   assert(s1.size() == 4);
 }
-*/
 
 int main() {
   test_empty();
   test_lifo();
   test_pop_empty();
+  test_status_sticky();
   test_growth();
   test_multiple();
   test_copy_constructor();
   test_assign();
-  // test_debugger_scenario();
+  test_debugger_scenario();
   std::printf("All tests passed.\n");
   return 0;
 }

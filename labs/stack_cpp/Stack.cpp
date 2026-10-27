@@ -46,7 +46,6 @@ Stack &Stack::operator=(const Stack &other) {
     std::memcpy(data_, other.data_, other.size_ * sizeof(int));
   }
   size_ = other.size_;
-  status_ = Status::Ok;
   return *this;
 }
 
@@ -83,7 +82,6 @@ void Stack::push(int element) {
   if (size_ == capacity_ && !expand())
     return;
   data_[size_++] = element;
-  status_ = Status::Ok;
 }
 
 int Stack::pop() {
@@ -91,7 +89,6 @@ int Stack::pop() {
     status_ = Status::Empty;
     return 0;
   }
-  status_ = Status::Ok;
   return data_[--size_];
 }
 

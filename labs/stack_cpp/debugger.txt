@@ -1,0 +1,16 @@
+(gdb) break test_debugger_scenario
+(gdb) break Stack::Stack(Stack const&)
+(gdb) break Stack::operator=
+(gdb) break Stack::~Stack
+(gdb) run
+
+next
+step
+continue
+bt
+frame 1
+list
+print *this
+print other
+info locals
+finish
