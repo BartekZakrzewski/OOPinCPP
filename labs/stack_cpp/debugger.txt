@@ -3,14 +3,15 @@
 (gdb) break Stack::operator=
 (gdb) break Stack::~Stack
 (gdb) run
+(gdb) info locals
+(gdb) continue
 
-next
-step
-continue
 bt
-frame 1
-list
 print *this
 print other
-info locals
-finish
+frame 1
+list frame 0
+continue
+
+continue
+quit

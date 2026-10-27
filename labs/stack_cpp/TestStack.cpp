@@ -98,7 +98,7 @@ void test_copy_constructor() {
   assert(c.capacity() == 0);
 }
 
-void test_assign() {
+void test_assign_big_small() {
   Stack big, small;
   fill(big, 20);
   fill(small, 2);
@@ -114,7 +114,9 @@ void test_assign() {
   assert(s2.capacity() == cap);
   assert(s2.size() == 2);
   assert(s2.pop() == 2);
+}
 
+void test_assign_empty() {
   Stack s3, empty;
   s3 = empty;
   assert(s3.isEmpty());
@@ -127,8 +129,10 @@ void test_assign() {
   assert(e1.size() == 5);
   assert(e1.capacity() == e1_cap);
   assert(e1.pop() == 5);
+}
 
-  Stack full;
+void test_assign_full_capacity() {
+  Stack full, empty;
   fill(full, 5);
   std::size_t full_cap = full.capacity();
   full = empty;
@@ -136,23 +140,42 @@ void test_assign() {
   assert(full.capacity() == full_cap);
   full.pop();
   assert(full.status() == Status::Empty);
+}
 
-  Stack fresh;
+void test_assign_to_empty() {
+  Stack fresh, big;
+  fill(big, 20);
   fresh = big;
   assert(fresh.size() == 20);
   assert(fresh.pop() == 20);
+}
 
-  Stack copy;
+void test_assign_empty_operations() {
+  Stack copy, small;
+  fill(small, 2);
   copy = small;
   copy.push(100);
   assert(small.size() == 2);
   assert(small.pop() == 2);
   assert(copy.pop() == 100);
+}
 
+void test_assign_reference() {
+  Stack big;
+  fill(big, 20);
   Stack &ref = big;
   big = ref;
   assert(big.size() == 20);
   assert(big.pop() == 20);
+}
+
+void test_assign() {
+  test_assign_big_small();
+  test_assign_empty();
+  test_assign_full_capacity();
+  test_assign_to_empty();
+  test_assign_empty_operations();
+  test_assign_reference();
 }
 
 void runSomeFunction(Stack s) { s.push(99); }

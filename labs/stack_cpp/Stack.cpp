@@ -42,9 +42,7 @@ Stack &Stack::operator=(const Stack &other) {
     data_ = tmp;
     capacity_ = other.size_;
   }
-  if (other.size_ > 0) {
-    std::memcpy(data_, other.data_, other.size_ * sizeof(int));
-  }
+  std::memcpy(data_, other.data_, other.size_ * sizeof(int));
   size_ = other.size_;
   return *this;
 }
