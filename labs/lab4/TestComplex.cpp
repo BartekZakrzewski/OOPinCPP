@@ -88,6 +88,13 @@ void test_chaining() {
   (a *= b) *= c;
   assert(a == Complex(-2, 2));
   assert(b == Complex(0, 1));
+
+  a = Complex(2, 2);
+  b = Complex(4, 4);
+  c = Complex(8, 8);
+  c /= b /= a;
+  assert(c == Complex(4, 4));
+  assert(b == Complex(2));
 }
 
 void test_self_operations() {
