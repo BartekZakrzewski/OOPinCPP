@@ -98,7 +98,9 @@ std::ostream &operator<<(std::ostream &os, const Poly &p) {
       os << (coeff < 0 ? " - " : " + ");
     }
 
-    os << std::abs(coeff);
+    if (std::abs(coeff) != 1 || exp == 0) {
+      os << std::abs(coeff);
+    }
     if (exp == 1) {
       os << "x";
     } else if (exp > 1) {
