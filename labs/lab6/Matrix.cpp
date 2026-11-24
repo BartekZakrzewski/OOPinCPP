@@ -9,8 +9,9 @@ Matrix::Matrix(int n, int m) {
 Matrix::Matrix(const Matrix &other) : _data(other._data) { _data->refCount++; }
 Matrix &Matrix::operator=(const Matrix &other) {
   other._data->refCount++;
-  if (--_data->refCount == 0)
+  if (--_data->refCount == 0) {
     delete _data;
+  }
   _data = other._data;
   return *this;
 }
@@ -57,8 +58,9 @@ Matrix &Matrix::operator*=(const Matrix &other) {
       }
     }
   }
-  if (--_data->refCount == 0)
+  if (--_data->refCount == 0) {
     delete _data;
+  }
   _data = res;
   return *this;
 }
@@ -140,13 +142,13 @@ Matrix::MatrixData::~MatrixData() {
 std::istream &operator>>(std::istream &in, Matrix &m) {
   int n, k;
   if (!(in >> n >> k)) {
-    throw MatrixReadExcpetion();
+    throw InvalidDimensionsException();
   }
   Matrix tmp(n, k);
   for (int row = 0; row < n; row++) {
     for (int col = 0; col < k; col++) {
       if (!(in >> tmp._data->data[row][col])) {
-        throw MatrixReadExcpetion();
+        throw MatrixReadException();
       }
     }
   }

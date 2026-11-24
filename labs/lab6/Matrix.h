@@ -4,34 +4,27 @@
 #include <stdexcept>
 #include <string>
 
+// clang-format off
 class MatrixException : public std::runtime_error {
-public:
-  explicit MatrixException(const std::string &msg) : std::runtime_error(msg) {}
+public: explicit MatrixException(const std::string &msg) : std::runtime_error(msg) {}
 };
 
 class InvalidDimensionsException : public MatrixException {
-public:
-  InvalidDimensionsException()
-      : MatrixException("Matrix dimensions must be positive") {}
+public: InvalidDimensionsException() : MatrixException("Matrix dimensions must be positive") {}
 };
 class IndexOutOfRangeException : public MatrixException {
-public:
-  IndexOutOfRangeException() : MatrixException("Matrix index out of range") {}
+public: IndexOutOfRangeException() : MatrixException("Matrix index out of range") {}
 };
 class SizeMismatchException : public MatrixException {
-public:
-  SizeMismatchException()
-      : MatrixException("Matrices must have the same size") {}
+public: SizeMismatchException() : MatrixException("Matrices must have the same size") {}
 };
 class MultiplicationMismatchException : public MatrixException {
-public:
-  MultiplicationMismatchException()
-      : MatrixException("Left columns must equal right rows") {}
+public: MultiplicationMismatchException() : MatrixException("Left columns must equal right rows") {}
 };
-class MatrixReadExcpetion : public MatrixException {
-public:
-  MatrixReadExcpetion() : MatrixException("Invalid matrix data in stream") {}
+class MatrixReadException : public MatrixException {
+public: MatrixReadException() : MatrixException("Invalid matrix data in stream") {} 
 };
+// clang-format on
 
 class Matrix {
 public:
