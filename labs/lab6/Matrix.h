@@ -46,16 +46,18 @@ public:
     Ref(Matrix &m, int row, int col) : _m(m), _row(row), _col(col) {}
 
   public:
-    operator int() const { return _m._data->data[_row][_col]; }
-    Ref &operator=(int value) {
+    operator double() const { return _m._data->data[_row][_col]; }
+    Ref &operator=(double value) {
       _m.detach();
       _m._data->data[_row][_col] = value;
       return *this;
     }
-    Ref &operator=(const Ref &other) { return *this = static_cast<int>(other); }
+    Ref &operator=(const Ref &other) {
+      return *this = static_cast<double>(other);
+    }
   };
 
-  int operator()(int row, int col) const;
+  double operator()(int row, int col) const;
   Ref operator()(int row, int col);
 
   int rows() const { return _data->n; }
@@ -66,7 +68,7 @@ public:
 
 private:
   struct MatrixData {
-    int **data;
+    double **data;
     int n, m;
     int refCount;
 

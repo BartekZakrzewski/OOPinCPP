@@ -78,7 +78,7 @@ bool operator==(const Matrix &lhs, const Matrix &rhs) {
   return true;
 }
 
-int Matrix::operator()(int row, int col) const {
+double Matrix::operator()(int row, int col) const {
   checkIndex(row, col);
   return _data->data[row][col];
 }
@@ -89,11 +89,11 @@ Matrix::Ref Matrix::operator()(int row, int col) {
 }
 
 void Matrix::MatrixData::allocate() {
-  data = new int *[n];
+  data = new double *[n];
   int i = 0;
   try {
     for (; i < n; i++) {
-      data[i] = new int[m]();
+      data[i] = new double[m]();
     }
   } catch (...) {
     for (int j = 0; j < i; j++) {

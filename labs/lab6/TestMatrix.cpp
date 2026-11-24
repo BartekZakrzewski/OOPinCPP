@@ -17,6 +17,7 @@ void testCompoundAssignment(const Matrix &a, const Matrix &b);
 void testComparison(const Matrix &a, const Matrix &b);
 void testSelfOperations(const Matrix &a);
 void testPassByValue(Matrix m, const Matrix &original);
+void testFloatingPoint();
 void testExceptions(const Matrix &a, const Matrix &b);
 
 int main() {
@@ -35,6 +36,7 @@ int main() {
   testCompoundAssignment(a, b);
   testComparison(a, b);
   testSelfOperations(a);
+  testFloatingPoint();
 
   cout << "\n======= Pass by value =======" << endl;
   cout << "refCount of a before call: " << a.refCount() << endl;
@@ -53,7 +55,7 @@ void testConstruction() {
   cout << "refCount: " << m.refCount() << endl;
 
   Matrix single(1, 1);
-  single(0, 0) = 42;
+  single(0, 0) = 3.14;
   cout << "1x1 matrix:\n" << single;
 }
 
@@ -77,7 +79,7 @@ void testElementAccess(const Matrix &a) {
   cout << "a(0, 0) = " << a(0, 0) << ", a(1, 2) = " << a(1, 2) << endl;
 
   Matrix m = a;
-  int sum = 0;
+  double sum = 0;
   for (int row = 0; row < m.rows(); row++) {
     for (int col = 0; col < m.cols(); col++) {
       sum += m(row, col);
@@ -87,8 +89,8 @@ void testElementAccess(const Matrix &a) {
   cout << "Data still shared after reads (refCount 2): " << m.refCount()
        << endl;
 
-  m(0, 0) = 100;
-  cout << "After m(0, 0) = 100, m:\n" << m;
+  m(0, 0) = 100.75;
+  cout << "After m(0, 0) = 100.75, m:\n" << m;
   cout << "a unchanged:\n" << a;
   cout << "refCount of m: " << m.refCount() << ", of a: " << a.refCount()
        << endl;
@@ -101,8 +103,11 @@ void testElementAccess(const Matrix &a) {
   cout << "After n(0, 1) = m(1, 2) (n shared with a), n:\n" << n;
   cout << "a unchanged: " << (a(0, 1) == 2) << endl;
 
-  m(0, 1) = m(0, 2) = -1;
-  cout << "After m(0, 1) = m(0, 2) = -1, m:\n" << m;
+  m(0, 1) = m(0, 2) = -0.5;
+  cout << "After m(0, 1) = m(0, 2) = -0.5, m:\n" << m;
+
+  m(1, 0) = 7;
+  cout << "Integer assigned to element, m(1, 0) = " << m(1, 0) << endl;
 }
 
 void testReferenceCounting(const Matrix &a) {
@@ -133,7 +138,6 @@ void testReferenceCounting(const Matrix &a) {
   }
   cout << "After copies go out of scope, refCount: " << a.refCount() << endl;
 
-  // Chained assignment
   Matrix x(1, 1), y(2, 2), z(3, 3);
   x = y = z = a;
   cout << "After x = y = z = a, refCount: " << a.refCount() << endl;
@@ -181,7 +185,7 @@ void testCompoundAssignment(const Matrix &a, const Matrix &b) {
   m += a;
   cout << "m = a; m += a:\n" << m;
   cout << "Equals a + a: " << (m == a + a)
-       << ", a unchanged: " << (a(0, 0) == 1) << endl;
+       << ", a unchanged: " << (a(0, 0) == 1.5) << endl;
 
   m = a;
   m -= a;
@@ -235,9 +239,9 @@ void testSelfOperations(const Matrix &a) {
   cout << "m = a; m -= m equals zero: " << (m == Matrix(2, 3)) << endl;
 
   Matrix sq(2, 2);
-  sq(0, 0) = 1;
+  sq(0, 0) = 0.5;
   sq(0, 1) = 2;
-  sq(1, 0) = 3;
+  sq(1, 0) = -1.5;
   sq(1, 1) = 4;
   Matrix shared = sq;
   sq *= sq;
@@ -247,9 +251,31 @@ void testSelfOperations(const Matrix &a) {
 
 void testPassByValue(Matrix m, const Matrix &original) {
   cout << "refCount inside function: " << m.refCount() << endl;
-  m(0, 0) = -100;
+  m(0, 0) = -100.5;
   cout << "Modified copy (0, 0): " << m(0, 0)
        << ", original (0, 0): " << original(0, 0) << endl;
+}
+
+void testFloatingPoint() {
+  cout << "\n======= Floating point values =======" << endl;
+
+  istringstream in("2 2\n1e-3 -2.5\n.75 1E2");
+  Matrix m(1, 1);
+  in >> m;
+  cout << "Read with scientific notation:\n" << m;
+  cout << "m(0, 0) == 0.001: " << (m(0, 0) == 0.001) << endl;
+
+  Matrix half(2, 2);
+  half(0, 0) = 0.5;
+  half(1, 1) = 0.5;
+  cout << "m * (0.5 I):\n" << m * half;
+
+  Matrix x(1, 1), expected(1, 1);
+  x(0, 0) = 0.1;
+  x += x;
+  x(0, 0) = x(0, 0) + 0.1;
+  expected(0, 0) = 0.3;
+  cout << "0.1 + 0.1 + 0.1 == 0.3: " << (x == expected) << endl;
 }
 
 void testExceptions(const Matrix &a, const Matrix &b) {
@@ -324,7 +350,7 @@ void testExceptions(const Matrix &a, const Matrix &b) {
   cout << "m unchanged after failed *=: " << (m == a) << endl;
 
   try {
-    istringstream in("2 2\n1 2\n3");
+    istringstream in("2 2\n1.5 2.5\n3");
     in >> m;
   } catch (const MatrixReadException &e) {
     cout << "Reading truncated data: " << e.what() << endl;
@@ -332,7 +358,7 @@ void testExceptions(const Matrix &a, const Matrix &b) {
   cout << "m unchanged after failed read: " << (m == a) << endl;
 
   try {
-    istringstream in("2 2\n1 x 3 4");
+    istringstream in("2 2\n1.5 x 3 4");
     in >> m;
   } catch (const MatrixReadException &e) {
     cout << "Reading non-numeric data: " << e.what() << endl;
