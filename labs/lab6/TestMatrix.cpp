@@ -133,7 +133,6 @@ void testReferenceCounting(const Matrix &a) {
   }
   cout << "After copies go out of scope, refCount: " << a.refCount() << endl;
 
-  // Chained assignment
   Matrix x(1, 1), y(2, 2), z(3, 3);
   x = y = z = a;
   cout << "After x = y = z = a, refCount: " << a.refCount() << endl;
